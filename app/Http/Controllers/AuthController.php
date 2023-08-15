@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use phpDocumentor\Reflection\Types\Null_;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
             "acces" => ["required","string"],
             "actions" => ["required","string"],
             "password" => ["required","string"],
-            "isActive" => ["required","string"]
+            "isActive" => ["required","boolean"]
         ]);
         $user = User::create([
             "nom" => $datas["nom"],
@@ -33,15 +34,17 @@ class AuthController extends Controller
 //        $user->save();
         return response($user,201);
     }
-    public function login(LoginRequest $req){
-        $credentials = $req->validated();
-        if(Auth::attempt($credentials)) {
-            $req->session()->regenerate();
-            return view("home.index",[
-                "user" => Auth::user(),
-            ]);
+    public function login(Request $req)
+    {
+        $datas = $req->validate([
+            "email" => ["required","string","min:3","max:150"],
+            "password" => ["required","string"]
+        ]);
+
+        if(Auth::attempt($datas)){
+            return Auth::user();
         }else{
-            return "l'utilisateur n'existe pas";
+            return ["message : " => "Email ou mot de passe incorrecte"];
         }
     }
 }

@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix("/users")->controller(UsersController::class)->name("users.")->group(function (){
-    Route::get("/get","getUsers")->name("getAll");
+    Route::get("/get/{id}","getUsers")->name("getAll");
+    Route::delete("/delete/{id}","deleteUser")->name("delete");
+    Route::get("/get/user/{id}","getUser")->name("oneUser");
 });
 
 Route::prefix("/auth")->controller(AuthController::class)->name("auth.")->group(function (){
